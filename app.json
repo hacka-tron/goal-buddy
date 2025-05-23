@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "learner",
-    "slug": "learner",
+    "name": "goal_buddy",
+    "slug": "goal_buddy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

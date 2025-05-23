@@ -1,26 +1,26 @@
 // This file is a fallback for using MaterialIcons on Android and web.
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Feather from '@expo/vector-icons/Feather';
 import { SymbolWeight } from 'expo-symbols';
 import React from 'react';
 import { OpaqueColorValue, StyleProp, ViewStyle } from 'react-native';
 
-// Add your SFSymbol to MaterialIcons mappings here.
-const MAPPING = {
-  // See MaterialIcons here: https://icons.expo.fyi
-  // See SF Symbols in the SF Symbols app on Mac.
-  'house.fill': 'home',
-  'paperplane.fill': 'send',
-  'chevron.left.forwardslash.chevron.right': 'code',
-  'chevron.right': 'chevron-right',
-} as Partial<
-  Record<
-    import('expo-symbols').SymbolViewProps['name'],
-    React.ComponentProps<typeof MaterialIcons>['name']
-  >
->;
+// a reusable mapping type for *any* icon component
+type IconMap<Comp extends React.ComponentType<any>> =
+  Partial<Record<import('expo-symbols').SymbolViewProps['name'], React.ComponentProps<Comp>['name']>>;
 
-export type IconSymbolName = keyof typeof MAPPING;
+const MATERIAL_MAPPING: IconMap<typeof MaterialIcons> = {
+  'handshake': 'handshake',
+  'bubble.left': 'chat-bubble-outline',
+  'bubble.left.fill': 'chat-bubble'
+};
+
+const FEATHER_MAPPING: IconMap<typeof Feather> = {
+  'target': 'target',
+};
+
+export type IconSymbolName = keyof (typeof MATERIAL_MAPPING & typeof FEATHER_MAPPING);
 
 /**
  * An icon component that uses native SFSymbols on iOS, and MaterialIcons on Android and web. This ensures a consistent look across platforms, and optimal resource usage.
@@ -39,5 +39,9 @@ export function IconSymbol({
   style?: StyleProp<ViewStyle>;
   weight?: SymbolWeight;
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+  if (name in MATERIAL_MAPPING) {
+    return <MaterialIcons color={color} size={size} name={MATERIAL_MAPPING[name]} style={style} />;
+  } if (name in FEATHER_MAPPING) {
+    return <Feather color={color} size={size} name={FEATHER_MAPPING[name]} style={style} />;
+  }
 }
